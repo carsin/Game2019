@@ -36,6 +36,6 @@ CHARACTERS
 - Builder
 - Collector
 
-CHALLENGES
+CODING CHALLENGES
 - Pathfinding
 - Data transmission
