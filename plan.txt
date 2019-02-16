@@ -1,0 +1,41 @@
+KINGDOM SIMULATOR MULTIPLAYER NOOB THING
+
+Technology:
+8x8 pixel Entity Sprites
+32x32 pixel Tile Sprites
+
+RELEASE GOALS
+tile based / locked
+medieval period
+hand-to-hand combat, no ranged (at least not at release)
+
+GOAL:
+Kill the king in a kingdoms capital
+- All citizens in a city die before king
+
+CAPITAL
+- Slowly produce citizens
+- Citizens can be drafted as mobile characters
+- Holds resources/relics
+- Capital has all capabilities of outposts
+- RESOURCES
+- + Wood, iron, food
+- + Need resources to equip characters
+
+Outposts
+- Founded away from capital
+- TYPES
+- + Settlement - produce people
+- + Fighting outpost - 
+- + Farm - Produces food
+- + Mining outpost - Trains miners
+- + = produces metals / rare chance to unearth relic 
+
+CHARACTERS
+- Soldier 
+- Builder
+- Collector
+
+CHALLENGES
+- Pathfinding
+- Data transmission
