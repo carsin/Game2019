@@ -1,12 +1,19 @@
 const express = require("express");
 const app = express();
+const http = require("http").Server(app);
 
-const io = require("socket.io")(13049);
+const io = require("socket.io")(http);
 
-app.get("/", function(req, res) {
-    res.sendFile(__dirname + "/html/index.html");
+app.use(express.static(__dirname + "/client"));
+
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/client/html/index.html");
 });
 
-app.listen(13050, function() {
+io.on("connection", () => {
+    console.log("connnectioon");
+});
+
+http.listen(13050, () => {
     console.log("Server started");
 });

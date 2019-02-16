@@ -20,12 +20,12 @@
             padding: 0;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
 </head>
 <body>
     <canvas id="gameView">your browser doesn't support canvas wtf bruh cmon</canvas>
     <script>
         function fillScreen() {
-            console.log("test");
             const canvas = document.getElementById("gameView");
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -34,5 +34,6 @@
         window.addEventListener("resize", fillScreen);
         fillScreen();
     </script>
+    <script src="/js/client.js"></script>
 </body>
 </html>

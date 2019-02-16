@@ -3,6 +3,7 @@ KINGDOM SIMULATOR MULTIPLAYER NOOB THING
 Technology:
 8x8 pixel Entity Sprites
 32x32 pixel Tile Sprites
+Full server side
 
 RELEASE GOALS
 tile based / locked
@@ -39,3 +40,12 @@ CHARACTERS
 CODING CHALLENGES
 - Pathfinding
 - Data transmission
+
+
+TIMELINE
+- Add sockets.io functionality
+- Server basic world structure / test generation
+- Send to client
+- Add world rendering
+- Implement ground and wall tiles
+- Add basic tiles (rock, dirt)
