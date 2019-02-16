@@ -49,3 +49,10 @@ TIMELINE
 - Add world rendering
 - Implement ground and wall tiles
 - Add basic tiles (rock, dirt)
+- Entity base class
+- + Position
+- Add building base class (extend entity)
+- + Inventory
+- + 
+- Add capital from settlement class
+- Add characters
