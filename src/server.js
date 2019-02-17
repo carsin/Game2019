@@ -5,7 +5,6 @@ const io = require("socket.io")(http);
 
 // World variables
 var world = require(__dirname + "/world.js");
-world.world.initMap();
 
 // Send html
 app.use(express.static(__dirname + "/client"));
@@ -20,7 +19,8 @@ io.on("connection", (socket) => {
     console.log("A player connected");
 
     // Send map to player initally
-    io.emit("load map", world)
+    console.log(world.world.map[[100, 100]]);
+    io.emit("load map", world.world)
 
     // Disconnect event
     socket.on("disconnect", () => {
