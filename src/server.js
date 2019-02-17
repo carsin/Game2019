@@ -5,7 +5,7 @@ const io = require("socket.io")(http);
 
 // World variables
 var world = require(__dirname + "/world.js");
-world.test();
+world.world.initMap();
 
 // Send html
 app.use(express.static(__dirname + "/client"));
