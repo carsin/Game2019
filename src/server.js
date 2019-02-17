@@ -19,7 +19,7 @@ io.on("connection", (socket) => {
     console.log("A player connected");
 
     // Send map to player initally
-    console.log(world.world.map[[100, 100]]);
+    console.log(world.world.map[100][100]);
     io.emit("load map", world.world)
 
     // Disconnect event
