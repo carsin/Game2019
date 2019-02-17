@@ -19,6 +19,9 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
     console.log("A player connected");
 
+    // Send map to player initally
+    io.emit("load map", world)
+
     // Disconnect event
     socket.on("disconnect", () => {
         console.log("A player disconnected");
