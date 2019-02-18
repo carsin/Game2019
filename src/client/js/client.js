@@ -53,8 +53,15 @@ function renderMap(world) {
     // TODO: permanent tileSize variable
     var tileSize = 8;
 
-    for (var x = 0; x <= world.xMax; x++) {
-        for (var y = 0; y <= world.yMax; y++) {
+    // Calculate bounds of triangle to render
+    var xStart = Math.floor(Math.max(0, camera.xOffset / tileSize));
+    var yStart = Math.floor(Math.max(0, camera.yOffset / tileSize));
+    var xEnd = Math.floor(Math.min(world.xMax, (camera.xOffset + canvas.width) / tileSize));
+    var yEnd = Math.floor(Math.min(world.yMax, (camera.yOffset + canvas.height) / tileSize));
+
+    // From top left of screen to bottom right of screen
+    for (var x = xStart; x <= xEnd; x++) {
+        for (var y = yStart; y <= yEnd; y++) {
             var tex;
 
             // Choose texture based on tile id
