@@ -1,17 +1,25 @@
-var socket = io();
-var canvas = document.getElementById("gameView");
-var gfx = canvas.getContext("2d");
+const socket = io();
+const canvas = document.getElementById("gameView");
+const gfx = canvas.getContext("2d");
+canvas.offScreenCanvas = document.createElement("canvas");
+
+canvas.offScreenCanvas.width = canvas.width;
+canvas.offScreenCanvas.height = canvas.height;
+
+canvas.preGfx = canvas.offScreenCanvas.getContext("2d");
 
 function fillScreen() {
-    const canvas = document.getElementById("gameView");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    canvas.offScreenCanvas.width = canvas.width;
+    canvas.offScreenCanvas.height = canvas.height;
     gfx.imageSmoothingEnabled = false;
+    canvas.preGfx.imageSmoothingEnabled = false;
 }
 
 fillScreen();
-
 window.addEventListener("resize", fillScreen);
+
 
 // Store keyboard and mouse input
 var input = {
@@ -26,8 +34,8 @@ var input = {
 };
 
 // Listen for key activity
-document.addEventListener("keydown", (e) => { 
-    input.keys[e.keyCode] = true; 
+document.addEventListener("keydown", (e) => {
+    input.keys[e.keyCode] = true;
     if (e.keyCode == 189) if (scale > 2) scale -= 1;
     if (e.keyCode == 187) if (scale < 8) scale += 1;
 });
@@ -65,7 +73,6 @@ socket.on("load map", (world) => {
 
 // TODO: permanent tileSize variable
 var tileSize = 8;
-// TODO: Zoom functionality based on scale
 var scale = 4;
 
 // Render the map
@@ -90,7 +97,7 @@ function renderMap(world) {
                 case "1": tex = resources.textures["grass"]; break;
             }
 
-            gfx.drawImage(tex, (x * tileSize) * scale - camera.xOffset, (y * tileSize) * scale - camera.yOffset, tileSize * scale, tileSize * scale);
+            canvas.preGfx.drawImage(tex, (x * tileSize) * scale - camera.xOffset, (y * tileSize) * scale - camera.yOffset, tileSize * scale, tileSize * scale);
         }
     }
 }
@@ -108,41 +115,38 @@ document.addEventListener("mouseup", () => {
 
 document.addEventListener("mousemove", (e) => {
     if (input.mouse.click) {
+
         var xDiff = input.mouse.lastX - e.clientX;
         var yDiff = input.mouse.lastY - e.clientY;
-        // console.log("xDiff: " + xDiff + " | yDiff: " + yDiff);
 
-        // TODO: remove temp vars
-        var tileSize = 8;
-        var scale = 4;
+        camera.xOffset = Math.round(camera.xOffset + xDiff);
+        camera.yOffset = Math.round(camera.yOffset + yDiff);
 
-        camera.xOffset = Math.max(0, Math.min((worldData.xMax + 1) * scale * tileSize - canvas.width, Math.round(camera.xOffset + xDiff)));
-        camera.yOffset = Math.max(0, Math.min((worldData.yMax + 1) * scale * tileSize - canvas.height, Math.round(camera.yOffset + yDiff)));
-        
         input.mouse.lastX = e.clientX;
         input.mouse.lastY = e.clientY;
     }
 }, true);
-
-var lastZoom = 20;
 
 function update() {
     // Update camera position
     // TODO: make permanent variable
     var scrollSpeed = 4 * scale;
 
+    // Breaks camera panning boundaries
     if (input.keys[87]) camera.yOffset -= scrollSpeed;
     if (input.keys[83]) camera.yOffset += scrollSpeed;
     if (input.keys[65]) camera.xOffset -= scrollSpeed;
     if (input.keys[68]) camera.xOffset += scrollSpeed;
-    
-    // Hacky if statements to regulate zoom speed. 
-    if (camera.xOffset < 0) camera.xOffset = 0;
-    if (camera.yOffset < 0) camera.yOffset = 0;
 }
 
 function render() {
-    gfx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight)
+    if (worldData === undefined) return;
+
+    // Lock camera
+    camera.xOffset = Math.max(0, Math.min((worldData.xMax + 1) * scale * tileSize - canvas.width, camera.xOffset));
+    camera.yOffset = Math.max(0, Math.min((worldData.yMax + 1) * scale * tileSize - canvas.height, camera.yOffset));
+
+    gfx.drawImage(canvas.offScreenCanvas, 0, 0);
     renderMap(worldData);
 }
 
