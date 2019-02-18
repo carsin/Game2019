@@ -6,6 +6,8 @@ var gfx = canvas.getContext("2d");
 var input = {
     keys: new Array(256),
     mouse: {
+        lastX: 0,
+        lastY: 0,
         x: 0,
         y: 0,
         click: false
@@ -13,33 +15,8 @@ var input = {
 };
 
 // Listen for key activity
-// document.addEventListener("keydown", (e) => { input.keys[e.keyCode] = true; });
-// document.addEventListener("keyup", (e) => { input.keys[e.keyCode] = false; });
-
-// Listen for mouse click
-canvas.addEventListener("mousedown", function(e) {
-    input.mouse.click = true;
-    camera.xOffset = canvas.offsetLeft - e.clientX;
-    camera.yOffset = canvas.offsetTop - e.clientY;
-}, true);
-
-document.addEventListener("mouseup", function() {
-    input.mouse.click = false;
-}, true);
-
-document.addEventListener("mousemove", function(event) {
-    console.log(input.mouse.click);
-    event.preventDefault();
-    if (input.mouse.click) {
-        input.mouse.click = true;
-        input.mouse = {
-            x: event.clientX,
-            y: event.clientY
-        };
-        canvas.style.left = (input.mouse.x + camera.xOffset) + "px";
-        canvas.style.top = (input.mouse.y + camera.yOffset) + "px";
-    }
-}, true);
+document.addEventListener("keydown", (e) => { input.keys[e.keyCode] = true; });
+document.addEventListener("keyup", (e) => { input.keys[e.keyCode] = false; });
 
 // Zoom and position of camera
 var camera = {
@@ -61,6 +38,7 @@ var resources = {
 resources.loadTexture("dirt", "../res/img/dirt.png");
 resources.loadTexture("grass", "../res/img/grass.png");
 
+// World data
 var worldData;
 
 socket.on("load map", (world) => {
@@ -85,10 +63,45 @@ function renderMap(world) {
                 case "1": tex = resources.textures["grass"]; break;
             }
 
-            gfx.drawImage(tex, x * tileSize, y * tileSize, tileSize, tileSize);
+            gfx.drawImage(tex, x * tileSize - camera.xOffset, y * tileSize - camera.yOffset, tileSize, tileSize);
         }
     }
 }
+
+/* 
+ * Move camera with mouse
+ * TODO: Clean up
+ * TODO: For some reason the smoothness and speed at which camera is panned 
+ * is dependent on the size of map. Figure out why & make it standard across
+ * map sizes
+ */
+
+canvas.addEventListener("mousedown", (e) => {
+    input.mouse.click = true;
+    input.mouse.lastX = e.clientX;
+    input.mouse.lastY = e.clientY;
+}, true);
+
+document.addEventListener("mouseup", () => {
+    input.mouse.click = false;
+}, true);
+
+document.addEventListener("mousemove", (e) => {
+    if (input.mouse.click) {
+        // input.mouse.x = e.clientX;
+        // input.mouse.y = e.clientY;
+
+        var xDiff = input.mouse.lastX - e.clientX;
+        var yDiff = input.mouse.lastY - e.clientY;
+        console.log("xDiff: " + xDiff + " | yDiff: " + yDiff);
+
+        camera.xOffset += xDiff;
+        camera.yOffset += yDiff;
+
+        input.mouse.lastX = e.clientX;
+        input.mouse.lastY = e.clientY;
+    }
+}, true);
 
 function update() {
     // Update camera position
