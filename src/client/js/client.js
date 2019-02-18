@@ -13,8 +13,33 @@ var input = {
 };
 
 // Listen for key activity
-document.addEventListener("keydown", (e) => { input.keys[e.keyCode] = true; });
-document.addEventListener("keyup", (e) => { input.keys[e.keyCode] = false; });
+// document.addEventListener("keydown", (e) => { input.keys[e.keyCode] = true; });
+// document.addEventListener("keyup", (e) => { input.keys[e.keyCode] = false; });
+
+// Listen for mouse click
+canvas.addEventListener("mousedown", function(e) {
+    input.mouse.click = true;
+    camera.xOffset = canvas.offsetLeft - e.clientX;
+    camera.yOffset = canvas.offsetTop - e.clientY;
+}, true);
+
+document.addEventListener("mouseup", function() {
+    input.mouse.click = false;
+}, true);
+
+document.addEventListener("mousemove", function(event) {
+    console.log(input.mouse.click);
+    event.preventDefault();
+    if (input.mouse.click) {
+        input.mouse.click = true;
+        input.mouse = {
+            x: event.clientX,
+            y: event.clientY
+        };
+        canvas.style.left = (input.mouse.x + camera.xOffset) + "px";
+        canvas.style.top = (input.mouse.y + camera.yOffset) + "px";
+    }
+}, true);
 
 // Zoom and position of camera
 var camera = {
@@ -36,7 +61,6 @@ var resources = {
 resources.loadTexture("dirt", "../res/img/dirt.png");
 resources.loadTexture("grass", "../res/img/grass.png");
 
-// World data
 var worldData;
 
 socket.on("load map", (world) => {
@@ -46,8 +70,6 @@ socket.on("load map", (world) => {
 
 // Render the map
 function renderMap(world) {
-
-    // Don't try to render empty world
     if (world == undefined) return;
 
     // TODO: permanent tileSize variable
@@ -55,7 +77,6 @@ function renderMap(world) {
 
     for (var x = 0; x <= world.xMax; x++) {
         for (var y = 0; y <= world.yMax; y++) {
-
             var tex;
 
             // Choose texture based on tile id
@@ -64,13 +85,12 @@ function renderMap(world) {
                 case "1": tex = resources.textures["grass"]; break;
             }
 
-            gfx.drawImage(tex, x * tileSize - camera.xOffset, y * tileSize - camera.yOffset, tileSize, tileSize);
+            gfx.drawImage(tex, x * tileSize, y * tileSize, tileSize, tileSize);
         }
     }
 }
 
 function update() {
-
     // Update camera position
     // TODO: make permanent variable
     var scrollSpeed = 4;
