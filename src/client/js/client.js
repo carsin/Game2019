@@ -68,8 +68,8 @@ function renderMap(world) {
     if (world == undefined) return;
 
     // Calculate bounds of triangle to render
-    var xStart = Math.floor(Math.max(0, camera.xOffset / (tileSize)));
-    var yStart = Math.floor(Math.max(0, camera.yOffset / (tileSize)));
+    var xStart = Math.floor(Math.max(0, camera.xOffset / (tileSize * scale)));
+    var yStart = Math.floor(Math.max(0, camera.yOffset / (tileSize * scale)));
     var xEnd = Math.ceil(Math.min(world.xMax, xStart + (canvas.width / (tileSize * scale))));
     var yEnd = Math.ceil(Math.min(world.yMax, yStart + (canvas.height / (tileSize * scale))));
     // console.log("xStart: " + xStart + " | yStart: " + yStart + " | xEnd: " + xEnd + " | yEnd: " + yEnd);
@@ -85,20 +85,13 @@ function renderMap(world) {
                 case "1": tex = resources.textures["grass"]; break;
             }
 
-            gfx.drawImage(tex, (x * tileSize - camera.xOffset) * scale, (y * tileSize - camera.yOffset) * scale, tileSize * scale, tileSize * scale);
+            gfx.drawImage(tex, (x * tileSize) * scale - camera.xOffset, (y * tileSize) * scale - camera.yOffset, tileSize * scale, tileSize * scale);
         }
     }
 }
 
 /* 
  * Move camera with mouse
- * TODO: For some reason the smoothness and speed at which camera is panned 
- * is dependent on the size of map. Figure out why & make it standard across
- * map sizes
- * Semi fixed this?
- * 
- * TODO: Add panning boundaries, so when edge of map is reached camera cannot
- * be scrolled further.
  */
 
 canvas.addEventListener("mousedown", (e) => {
@@ -117,13 +110,14 @@ document.addEventListener("mousemove", (e) => {
         var yDiff = input.mouse.lastY - e.clientY;
         // console.log("xDiff: " + xDiff + " | yDiff: " + yDiff);
 
-        camera.xOffset = Math.round(camera.xOffset + xDiff / 5);
-        camera.yOffset = Math.round(camera.yOffset + yDiff / 5);
-        if (camera.xOffset < 0) camera.xOffset = 0;
-        if (camera.yOffset < 0) camera.yOffset = 0;
-        // TODO: Fix max borders.
-        if (camera.xOffset > worldData.xMax * (tileSize + scale)) camera.xOffset = worldData.xMax * (tileSize + scale);
-        if (camera.yOffset > worldData.yMax * (tileSize + scale)) camera.yOffset = worldData.yMax * (tileSize + scale);
+        // TODO: remove temp vars
+        var tileSize = 8;
+        var scale = 4;
+
+        camera.xOffset = Math.max(0, Math.min((worldData.xMax + 1) * scale * tileSize - canvas.width, Math.round(camera.xOffset + xDiff)));
+        camera.yOffset = Math.max(0, Math.min((worldData.yMax + 1) * scale * tileSize - canvas.height, Math.round(camera.yOffset + yDiff)));
+        
+        
 
         input.mouse.lastX = e.clientX;
         input.mouse.lastY = e.clientY;
@@ -160,9 +154,9 @@ function onFrame() {
         fps = 0;
     }
 
-    fpsChange = (performance.now() - lastFrame)/1000;
+    fpsChange = (performance.now() - lastFrame) / 1000;
     lastFrame = performance.now();
-    fps = 1/fpsChange;
+    fps = 1 / fpsChange;
     fpsView.innerHTML = Math.round(fps);
     update();
     render();
