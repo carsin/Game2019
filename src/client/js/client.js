@@ -90,10 +90,7 @@ function renderMap(world) {
     }
 }
 
-/* 
- * Move camera with mouse
- */
-
+// Move camera with mouse
 canvas.addEventListener("mousedown", (e) => {
     input.mouse.click = true;
     input.mouse.lastX = e.clientX;
@@ -117,22 +114,43 @@ document.addEventListener("mousemove", (e) => {
         camera.xOffset = Math.max(0, Math.min((worldData.xMax + 1) * scale * tileSize - canvas.width, Math.round(camera.xOffset + xDiff)));
         camera.yOffset = Math.max(0, Math.min((worldData.yMax + 1) * scale * tileSize - canvas.height, Math.round(camera.yOffset + yDiff)));
         
-        
-
         input.mouse.lastX = e.clientX;
         input.mouse.lastY = e.clientY;
     }
 }, true);
 
+var lastZoom = 20;
+
 function update() {
     // Update camera position
     // TODO: make permanent variable
-    var scrollSpeed = 4;
+    var scrollSpeed = 4 * scale;
 
     if (input.keys[87]) camera.yOffset -= scrollSpeed;
     if (input.keys[83]) camera.yOffset += scrollSpeed;
     if (input.keys[65]) camera.xOffset -= scrollSpeed;
     if (input.keys[68]) camera.xOffset += scrollSpeed;
+    
+    // Hacky if statements to regulate zoom speed. 
+    if (input.keys[189]) {
+        if (scale > 2) {
+            if (lastZoom == 20) {
+                scale -= 1;
+                lastZoom = 0;
+            }
+            lastZoom++;
+        }
+    }
+
+    if (input.keys[187]) {
+        if (scale < 8) {
+            if (lastZoom == 20) {
+                scale += 1;
+                lastZoom = 0;
+            }
+            lastZoom++;
+        }
+    }
 
     if (camera.xOffset < 0) camera.xOffset = 0;
     if (camera.yOffset < 0) camera.yOffset = 0;
