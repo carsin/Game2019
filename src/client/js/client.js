@@ -58,21 +58,23 @@ socket.on("load map", (world) => {
     worldData = world;
 });
 
+// TODO: permanent tileSize variable
+var tileSize = 8;
+// TODO: Zoom functionality based on scale
+var scale = 4;
+
 // Render the map
 function renderMap(world) {
     if (world == undefined) return;
-
-    // TODO: permanent tileSize variable
-    var tileSize = 8;
-    var scale = 4;
 
     // Calculate bounds of triangle to render
     var xStart = Math.floor(Math.max(0, camera.xOffset / (tileSize + scale)));
     var yStart = Math.floor(Math.max(0, camera.yOffset / (tileSize + scale)));
     // TODO: Fix xEnd & yEnd algorithm
+    // I have wracked for about an hour on this, cannot figure it out to save my life.
     var xEnd = Math.ceil(Math.min(world.xMax, xStart * 1.5 + (canvas.width / (tileSize * scale))));
     var yEnd = Math.ceil(Math.min(world.yMax, yStart * 1.5 + (canvas.height / (tileSize * scale))));
-    console.log("xStart: " + xStart + " | yStart: " + yStart + " | xEnd: " + xEnd + " | yEnd: " + yEnd);
+    // console.log("xStart: " + xStart + " | yStart: " + yStart + " | xEnd: " + xEnd + " | yEnd: " + yEnd);
 
     // From top left of screen to bottom right of screen
     for (var x = xStart; x <= xEnd; x++) {
@@ -95,6 +97,8 @@ function renderMap(world) {
  * TODO: For some reason the smoothness and speed at which camera is panned 
  * is dependent on the size of map. Figure out why & make it standard across
  * map sizes
+ * Semi fixed this?
+ * 
  * TODO: Add panning boundaries, so when edge of map is reached camera cannot
  * be scrolled further.
  */
@@ -117,6 +121,12 @@ document.addEventListener("mousemove", (e) => {
 
         camera.xOffset = Math.round(camera.xOffset + xDiff / 5);
         camera.yOffset = Math.round(camera.yOffset + yDiff / 5);
+        if (camera.xOffset < 0) camera.xOffset = 0;
+        if (camera.yOffset < 0) camera.yOffset = 0;
+        // TODO: Fix max borders.
+        if (camera.xOffset > worldData.xMax * (tileSize + scale)) camera.xOffset = worldData.xMax * (tileSize + scale);
+        if (camera.yOffset > worldData.yMax * (tileSize + scale)) camera.yOffset = worldData.yMax * (tileSize + scale);
+        console.log("xOffset: " + camera.xOffset + " yOffset: " + camera.yOffset + "xMax: " + worldData.xMax * (tileSize + scale) + "yMax: " + worldData.yMax * (tileSize + scale));
 
         input.mouse.lastX = e.clientX;
         input.mouse.lastY = e.clientY;
@@ -132,6 +142,9 @@ function update() {
     if (input.keys[83]) camera.yOffset += scrollSpeed;
     if (input.keys[65]) camera.xOffset -= scrollSpeed;
     if (input.keys[68]) camera.xOffset += scrollSpeed;
+
+    if (camera.xOffset < 0) camera.xOffset = 0;
+    if (camera.yOffset < 0) camera.yOffset = 0;
 }
 
 function render() {
