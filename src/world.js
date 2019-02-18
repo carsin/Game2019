@@ -1,7 +1,7 @@
 var world = {
     map: [],
-    xMax: 100,
-    yMax: 100,
+    xMax: 200,
+    yMax: 200,
 
     initMap: () => {
         console.log("Building map with size " + world.xMax + "x" + world.yMax);

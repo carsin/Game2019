@@ -2,6 +2,17 @@ var socket = io();
 var canvas = document.getElementById("gameView");
 var gfx = canvas.getContext("2d");
 
+function fillScreen() {
+    const canvas = document.getElementById("gameView");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    gfx.imageSmoothingEnabled = false;
+}
+
+fillScreen();
+
+window.addEventListener("resize", fillScreen);
+
 // Store keyboard and mouse input
 var input = {
     keys: new Array(256),
@@ -56,10 +67,12 @@ function renderMap(world) {
     var scale = 4;
 
     // Calculate bounds of triangle to render
-    var xStart = Math.floor(Math.max(0, camera.xOffset / tileSize));
-    var yStart = Math.floor(Math.max(0, camera.yOffset / tileSize));
-    var xEnd = Math.floor(Math.min(world.xMax, (camera.xOffset + canvas.width) / tileSize));
-    var yEnd = Math.floor(Math.min(world.yMax, (camera.yOffset + canvas.height) / tileSize));
+    var xStart = Math.floor(Math.max(0, camera.xOffset / (tileSize + scale)));
+    var yStart = Math.floor(Math.max(0, camera.yOffset / (tileSize + scale)));
+    // TODO: Fix xEnd & yEnd algorithm
+    var xEnd = Math.ceil(Math.min(world.xMax, xStart * 1.5 + (canvas.width / (tileSize * scale))));
+    var yEnd = Math.ceil(Math.min(world.yMax, yStart * 1.5 + (canvas.height / (tileSize * scale))));
+    console.log("xStart: " + xStart + " | yStart: " + yStart + " | xEnd: " + xEnd + " | yEnd: " + yEnd);
 
     // From top left of screen to bottom right of screen
     for (var x = xStart; x <= xEnd; x++) {
@@ -103,7 +116,7 @@ document.addEventListener("mousemove", (e) => {
         // console.log("xDiff: " + xDiff + " | yDiff: " + yDiff);
 
         camera.xOffset = Math.round(camera.xOffset + xDiff / 5);
-        camera.yOffset = Math.round(camera.yOffset += yDiff / 5);
+        camera.yOffset = Math.round(camera.yOffset + yDiff / 5);
 
         input.mouse.lastX = e.clientX;
         input.mouse.lastY = e.clientY;

@@ -11,17 +11,6 @@
 <body>
     <span id="fpsView"></span>
     <canvas id="gameView">your browser doesn't support canvas wtf bruh cmon</canvas>
-    <script>
-        function fillScreen() {
-            const canvas = document.getElementById("gameView");
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            gfx.imageSmoothingEnabled = false;
-        }
-
-        window.addEventListener("resize", fillScreen);
-        fillScreen();
-    </script>
     <script src="/js/client.js"></script>
 </body>
 </html>
