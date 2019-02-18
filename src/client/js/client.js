@@ -37,6 +37,7 @@ var resources = {
 
 resources.loadTexture("dirt", "../res/img/dirt.png");
 resources.loadTexture("grass", "../res/img/grass.png");
+gfx.imageSmoothingEnabled = false;
 
 // World data
 var worldData;
@@ -52,6 +53,7 @@ function renderMap(world) {
 
     // TODO: permanent tileSize variable
     var tileSize = 8;
+    var scale = 4;
 
     // Calculate bounds of triangle to render
     var xStart = Math.floor(Math.max(0, camera.xOffset / tileSize));
@@ -70,7 +72,7 @@ function renderMap(world) {
                 case "1": tex = resources.textures["grass"]; break;
             }
 
-            gfx.drawImage(tex, x * tileSize - camera.xOffset, y * tileSize - camera.yOffset, tileSize, tileSize);
+            gfx.drawImage(tex, (x * tileSize - camera.xOffset) * scale, (y * tileSize - camera.yOffset) * scale, tileSize * scale, tileSize * scale);
         }
     }
 }

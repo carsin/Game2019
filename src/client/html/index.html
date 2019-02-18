@@ -14,8 +14,9 @@
     <script>
         function fillScreen() {
             const canvas = document.getElementById("gameView");
-            canvas.width = window.innerWidth / 4;
-            canvas.height = window.innerHeight / 4;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gfx.imageSmoothingEnabled = false;
         }
 
         window.addEventListener("resize", fillScreen);
