@@ -127,6 +127,10 @@ document.addEventListener("mousemove", (e) => {
     }
 }, true);
 
+function sendControls() {
+
+}
+
 function update() {
     // Update camera position
     // TODO: make permanent variable
