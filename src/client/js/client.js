@@ -26,7 +26,12 @@ var input = {
 };
 
 // Listen for key activity
-document.addEventListener("keydown", (e) => { input.keys[e.keyCode] = true; });
+document.addEventListener("keydown", (e) => { 
+    input.keys[e.keyCode] = true; 
+    if (e.keyCode == 189) if (scale > 2) scale -= 1;
+    if (e.keyCode == 187) if (scale < 8) scale += 1;
+
+});
 document.addEventListener("keyup", (e) => { input.keys[e.keyCode] = false; });
 
 // Zoom and position of camera
@@ -132,26 +137,6 @@ function update() {
     if (input.keys[68]) camera.xOffset += scrollSpeed;
     
     // Hacky if statements to regulate zoom speed. 
-    if (input.keys[189]) {
-        if (scale > 2) {
-            if (lastZoom == 20) {
-                scale -= 1;
-                lastZoom = 0;
-            }
-            lastZoom++;
-        }
-    }
-
-    if (input.keys[187]) {
-        if (scale < 8) {
-            if (lastZoom == 20) {
-                scale += 1;
-                lastZoom = 0;
-            }
-            lastZoom++;
-        }
-    }
-
     if (camera.xOffset < 0) camera.xOffset = 0;
     if (camera.yOffset < 0) camera.yOffset = 0;
 }
