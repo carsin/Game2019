@@ -119,10 +119,24 @@ function render() {
     renderMap(worldData);
 }
 
+var lastFrame;
+var fps;
+var fpsChange;
+var fpsView = document.getElementById("fpsView");
+
 function onFrame() {
+    if (!lastFrame) {
+        lastFrame = performance.now();
+        fps = 0;
+    }
+
+    fpsChange = (performance.now() - lastFrame)/1000;
+    lastFrame = performance.now();
+    fps = 1/fpsChange;
+    fpsView.innerHTML = Math.round(fps);
     update();
     render();
-    requestAnimationFrame(onFrame);
+    window.requestAnimationFrame(onFrame);
 }
 
-requestAnimationFrame(onFrame);
+window.requestAnimationFrame(onFrame);

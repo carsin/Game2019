@@ -1,4 +1,20 @@
-canvas {
+html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+#fpsView {
+    font-size: 16px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-weight: bolder;
+    position: absolute;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+#gameView {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -6,10 +22,4 @@ canvas {
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
-}
-
-body {
-    margin: 0;
-    overflow: hidden;
-    padding: 0;
 }
