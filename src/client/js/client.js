@@ -68,12 +68,10 @@ function renderMap(world) {
     if (world == undefined) return;
 
     // Calculate bounds of triangle to render
-    var xStart = Math.floor(Math.max(0, camera.xOffset / (tileSize + scale)));
-    var yStart = Math.floor(Math.max(0, camera.yOffset / (tileSize + scale)));
-    // TODO: Fix xEnd & yEnd algorithm
-    // I have wracked for about an hour on this, cannot figure it out to save my life.
-    var xEnd = Math.ceil(Math.min(world.xMax, xStart * 1.5 + (canvas.width / (tileSize * scale))));
-    var yEnd = Math.ceil(Math.min(world.yMax, yStart * 1.5 + (canvas.height / (tileSize * scale))));
+    var xStart = Math.floor(Math.max(0, camera.xOffset / (tileSize)));
+    var yStart = Math.floor(Math.max(0, camera.yOffset / (tileSize)));
+    var xEnd = Math.ceil(Math.min(world.xMax, xStart + (canvas.width / (tileSize * scale))));
+    var yEnd = Math.ceil(Math.min(world.yMax, yStart + (canvas.height / (tileSize * scale))));
     // console.log("xStart: " + xStart + " | yStart: " + yStart + " | xEnd: " + xEnd + " | yEnd: " + yEnd);
 
     // From top left of screen to bottom right of screen
@@ -126,7 +124,6 @@ document.addEventListener("mousemove", (e) => {
         // TODO: Fix max borders.
         if (camera.xOffset > worldData.xMax * (tileSize + scale)) camera.xOffset = worldData.xMax * (tileSize + scale);
         if (camera.yOffset > worldData.yMax * (tileSize + scale)) camera.yOffset = worldData.yMax * (tileSize + scale);
-        console.log("xOffset: " + camera.xOffset + " yOffset: " + camera.yOffset + "xMax: " + worldData.xMax * (tileSize + scale) + "yMax: " + worldData.yMax * (tileSize + scale));
 
         input.mouse.lastX = e.clientX;
         input.mouse.lastY = e.clientY;
