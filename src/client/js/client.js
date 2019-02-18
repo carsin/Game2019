@@ -70,10 +70,11 @@ function renderMap(world) {
 
 /* 
  * Move camera with mouse
- * TODO: Clean up
  * TODO: For some reason the smoothness and speed at which camera is panned 
  * is dependent on the size of map. Figure out why & make it standard across
  * map sizes
+ * TODO: Add panning boundaries, so when edge of map is reached camera cannot
+ * be scrolled further.
  */
 
 canvas.addEventListener("mousedown", (e) => {
@@ -88,15 +89,12 @@ document.addEventListener("mouseup", () => {
 
 document.addEventListener("mousemove", (e) => {
     if (input.mouse.click) {
-        // input.mouse.x = e.clientX;
-        // input.mouse.y = e.clientY;
-
         var xDiff = input.mouse.lastX - e.clientX;
         var yDiff = input.mouse.lastY - e.clientY;
-        console.log("xDiff: " + xDiff + " | yDiff: " + yDiff);
+        // console.log("xDiff: " + xDiff + " | yDiff: " + yDiff);
 
-        camera.xOffset += xDiff;
-        camera.yOffset += yDiff;
+        camera.xOffset = Math.round(camera.xOffset + xDiff / 5);
+        camera.yOffset = Math.round(camera.yOffset += yDiff / 5);
 
         input.mouse.lastX = e.clientX;
         input.mouse.lastY = e.clientY;
