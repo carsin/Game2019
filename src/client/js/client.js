@@ -30,8 +30,8 @@ document.addEventListener("keydown", (e) => {
     input.keys[e.keyCode] = true; 
     if (e.keyCode == 189) if (scale > 2) scale -= 1;
     if (e.keyCode == 187) if (scale < 8) scale += 1;
-
 });
+
 document.addEventListener("keyup", (e) => { input.keys[e.keyCode] = false; });
 
 // Zoom and position of camera
