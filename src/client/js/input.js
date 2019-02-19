@@ -13,8 +13,8 @@ function Input() {
 document.addEventListener("keydown", (e) => {
     // Store keyboard and mouse input
     input.keys[e.keyCode] = true;
-    if (e.keyCode == 189) if (scale > 2) scale -= 1;
-    if (e.keyCode == 187) if (scale < 8) scale += 1;
+    if (e.keyCode == 189) if (gfx.scale > 2) gfx.scale -= 1;
+    if (e.keyCode == 187) if (gfx.scale < 8) gfx.scale += 1;
 });
 
 document.addEventListener("keyup", (e) => { input.keys[e.keyCode] = false; });

@@ -11,20 +11,18 @@ var resources = new Resources(8, 4);
 resources.loadTexture("dirt", "../res/img/dirt.png");
 resources.loadTexture("grass", "../res/img/grass.png");
 
+window.onload = gfx.fillScreen;
+window.addEventListener("resize", gfx.fillScreen);
+
 function update() {
-    // Update camera position
-    // TODO: make permanent variable
     var scrollSpeed = 4 * gfx.scale;
 
-    // Breaks camera panning boundaries
     if (input.keys[87]) gfx.camera.yOffset -= scrollSpeed;
     if (input.keys[83]) gfx.camera.yOffset += scrollSpeed;
     if (input.keys[65]) gfx.camera.xOffset -= scrollSpeed;
     if (input.keys[68]) gfx.camera.xOffset += scrollSpeed;
 }
 
-gfx.fillScreen();
-window.addEventListener("resize", gfx.fillScreen);
 
 // Main game loop.
 function onFrame() {

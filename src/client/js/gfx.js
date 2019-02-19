@@ -8,8 +8,6 @@ function GFX(tileSize, scale) {
     // Set up offscreen canvas
     this.canvas.offScreenCanvas = document.createElement("canvas");
     this.canvas.preCtx = this.canvas.offScreenCanvas.getContext("2d");
-    this.canvas.offScreenCanvas.width = this.canvas.width;
-    this.canvas.offScreenCanvas.heigh = this.canvas.height;
 
     this.fillScreen = () => {
         this.canvas.width = window.innerWidth;
@@ -24,7 +22,6 @@ function GFX(tileSize, scale) {
     this.camera = {
         xOffset: 0,
         yOffset: 0,
-        zoom: 1
     };
 
     // Render the map
