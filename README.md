@@ -55,7 +55,6 @@
 * ~~Add world rendering~~
 * ~~Add camera panning~~
 * ~~Add zooming~~
-* Refactor clientside javascript
 * Optimize rendering
 * Implement basic tiles
 * Add basic tiles (rock, dirt)
