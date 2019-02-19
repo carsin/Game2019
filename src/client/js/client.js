@@ -18,7 +18,7 @@ function update() {
     if (input.keys[68]) gfx.camera.xOffset += scrollSpeed;
 }
 
-fillScreen();
+gfx.fillScreen();
 window.addEventListener("resize", gfx.fillScreen);
 
 // Main game loop.
@@ -33,7 +33,7 @@ function onFrame() {
     fps = 1 / fpsChange;
     fpsView.innerHTML = Math.round(fps);
     update();
-    render();
+    gfx.render();
     window.requestAnimationFrame(onFrame);
 }
 

@@ -1,9 +1,9 @@
 function GFX(tileSize, scale) {
-    this.tileSize = tileSize,
-    this.scale = scale,
+    this.tileSize = tileSize;
+    this.scale = scale;
 
-    this.canvas = document.getElementById("gameView"),
-    this.ctx = this.canvas.getContext("2d"),
+    this.canvas = document.getElementById("gameView");
+    this.ctx = this.canvas.getContext("2d");
 
     // Set up offscreen canvas
     this.canvas.offScreenCanvas = document.createElement("canvas");
@@ -11,24 +11,24 @@ function GFX(tileSize, scale) {
     this.canvas.offScreenCanvas.width = this.canvas.width;
     this.canvas.offScreenCanvas.heigh = this.canvas.height;
 
-    fillScreen = () => {
+    this.fillScreen = () => {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.canvas.offScreenCanvas.width = this.canvas.width;
         this.canvas.offScreenCanvas.height = this.canvas.height;
         this.ctx.imageSmoothingEnabled = false;
         this.ctx.canvas.preCtx.imageSmoothingEnabled = false;
-    },
+    };
 
     // Zoom and position of camera
     this.camera = {
         xOffset: 0,
         yOffset: 0,
         zoom: 1
-    },
+    };
 
     // Render the map
-    renderMap = (world) => {
+    this.renderMap = (world) => {
         if (world == undefined) return;
 
         // Calculate bounds of triangle to render
@@ -52,10 +52,9 @@ function GFX(tileSize, scale) {
                 this.canvas.preCtx.drawImage(tex, (x * this.tileSize) * this.scale - this.camera.xOffset, (y * this.tileSize) * this.scale - this.camera.yOffset, this.tileSize * this.scale, this.tileSize * this.scale);
             }
         }
-    },
-
+    };
     
-    render = () => {
+    this.render = () => {
         if (worldData === undefined) return;
 
         // Lock camera
@@ -63,6 +62,6 @@ function GFX(tileSize, scale) {
         this.camera.yOffset = Math.max(0, Math.min((worldData.yMax + 1) * this.scale * this.tileSize - this.canvas.height, this.camera.yOffset));
 
         this.ctx.drawImage(this.canvas.offScreenCanvas, 0, 0);
-        renderMap(worldData);
-    }
+        this.renderMap(worldData);
+    };
 }
