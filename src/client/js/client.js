@@ -16,6 +16,10 @@ function update() {
     if (input.keys[68]) camera.xOffset += scrollSpeed;
 }
 
+window.onload = gfx.cfx.fillScreen();
+window.addEventListener("resize", gfx.ctx.fillScreen);
+
+
 // Main game loop.
 function onFrame() {
     if (!lastFrame) {
@@ -31,5 +35,6 @@ function onFrame() {
     render();
     window.requestAnimationFrame(onFrame);
 }
+console.log(gfx.canvas);
 
 window.requestAnimationFrame(onFrame);

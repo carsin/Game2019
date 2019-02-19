@@ -1,64 +1,74 @@
-const canvas = document.getElementById("gameView");
-const gfx = canvas.getContext("2d");
-canvas.offScreenCanvas = document.createElement("canvas");
+var gfx = {
+    canvas: document.getElementById("gameView"),
+    ctx: gfx.canvas.getContext("2d"),
+    
+    fillScreen: () => {
+        gfx.canvas.width = window.innerWidth;
+        gfx.canvas.height = window.innerHeight;
+        gfx.canvas.offScreenCanvas.width = canvas.width;
+        gfx.canvas.offScreenCanvas.height = canvas.height;
+        gfx.imageSmoothingEnabled = false;
+        gfx.canvas.preGfx.imageSmoothingEnabled = false;
+    },
 
-canvas.offScreenCanvas.width = canvas.width;
-canvas.offScreenCanvas.height = canvas.height;
+    // Zoom and position of camera
+    camera: {
+        xOffset: 0,
+        yOffset: 0,
+        zoom: 1
+    },
 
-canvas.preGfx = canvas.offScreenCanvas.getContext("2d");
+    // TODO: permanent tileSize variable
+    tileSize: 8,
+    scale: 4,
 
-function fillScreen() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.offScreenCanvas.width = canvas.width;
-    canvas.offScreenCanvas.height = canvas.height;
-    gfx.imageSmoothingEnabled = false;
-    canvas.preGfx.imageSmoothingEnabled = false;
-}
+    // Render the map
+    renderMap: (world) => {
+        if (world == undefined) return;
 
-window.onload = fillScreen();
-window.addEventListener("resize", fillScreen);
+        // Calculate bounds of triangle to render
+        var xStart = Math.floor(Math.max(0, gfx.camera.xOffset / (gfx.tileSize * gfx.scale)));
+        var yStart = Math.floor(Math.max(0, gfx.camera.yOffset / (gfx.tileSize * gfx.scale)));
+        var xEnd = Math.ceil(Math.min(world.xMax, xStart + (gfx.canvas.width / (gfx.tileSize * gfx.scale))));
+        var yEnd = Math.ceil(Math.min(world.yMax, yStart + (gfx.canvas.height / (gfx.tileSize * gfx.scale))));
+        // console.log("xStart: " + xStart + " | yStart: " + yStart + " | xEnd: " + xEnd + " | yEnd: " + yEnd);
 
-// Zoom and position of camera
-var camera = {
-    xOffset: 0,
-    yOffset: 0,
-    zoom: 1
-}
+        // From top left of screen to bottom right of screen
+        for (var x = xStart; x <= xEnd; x++) {
+            for (var y = yStart; y <= yEnd; y++) {
+                var tex;
 
-// TODO: permanent tileSize variable
-var tileSize = 8;
-var scale = 4;
+                // Choose texture based on tile id
+                switch (world.map[x][y]) {
+                    case "0": tex = resources.textures["dirt"]; break;
+                    case "1": tex = resources.textures["grass"]; break;
+                }
 
-// Render the map
-function renderMap(world) {
-    if (world == undefined) return;
-
-    // Calculate bounds of triangle to render
-    var xStart = Math.floor(Math.max(0, camera.xOffset / (tileSize * scale)));
-    var yStart = Math.floor(Math.max(0, camera.yOffset / (tileSize * scale)));
-    var xEnd = Math.ceil(Math.min(world.xMax, xStart + (canvas.width / (tileSize * scale))));
-    var yEnd = Math.ceil(Math.min(world.yMax, yStart + (canvas.height / (tileSize * scale))));
-    // console.log("xStart: " + xStart + " | yStart: " + yStart + " | xEnd: " + xEnd + " | yEnd: " + yEnd);
-
-    // From top left of screen to bottom right of screen
-    for (var x = xStart; x <= xEnd; x++) {
-        for (var y = yStart; y <= yEnd; y++) {
-            var tex;
-
-            // Choose texture based on tile id
-            switch (world.map[x][y]) {
-                case "0": tex = resources.textures["dirt"]; break;
-                case "1": tex = resources.textures["grass"]; break;
+                gfx.canvas.preGfx.drawImage(tex, (x * gfx.tileSize) * gfx.scale - gfx.camera.xOffset, (y * gfx.tileSize) * gfx.scale - gfx.camera.yOffset, gfx.tileSize * gfx.scale, gfx.tileSize * gfx.scale);
             }
-
-            canvas.preGfx.drawImage(tex, (x * tileSize) * scale - camera.xOffset, (y * tileSize) * scale - camera.yOffset, tileSize * scale, tileSize * scale);
         }
+    },
+
+    
+    render: () => {
+        if (worldData === undefined) return;
+
+        // Lock camera
+        gfx.camera.xOffset = Math.max(0, Math.min((worldData.xMax + 1) * gfx.scale * gfx.tileSize - gfx.canvas.width, gfx.camera.xOffset));
+        gfx.camera.yOffset = Math.max(0, Math.min((worldData.yMax + 1) * gfx.scale * gfx.tileSize - gfx.canvas.height, gfx.camera.yOffset));
+
+        gfx.drawImage(gfx.canvas.offScreenCanvas, 0, 0);
+        renderMap(worldData);
     }
 }
 
+gfx.canvas.offScreenCanvas = document.createElement("canvas");
+gfx.canvas.offScreenCanvas.width = canvas.width;
+gfx.canvas.offScreenCanvas.heigh = canvas.height;
+gfx.canvas.preGfx = canvas.offScreenCanvas.getContext("2d");
+
 // Move camera with mouse
-canvas.addEventListener("mousedown", (e) => {
+gfx.canvas.addEventListener("mousedown", (e) => {
     input.mouse.click = true;
     input.mouse.lastX = e.clientX;
     input.mouse.lastY = e.clientY;
@@ -70,7 +80,6 @@ document.addEventListener("mouseup", () => {
 
 document.addEventListener("mousemove", (e) => {
     if (input.mouse.click) {
-
         var xDiff = input.mouse.lastX - e.clientX;
         var yDiff = input.mouse.lastY - e.clientY;
 
@@ -81,14 +90,3 @@ document.addEventListener("mousemove", (e) => {
         input.mouse.lastY = e.clientY;
     }
 }, true);
-
-function render() {
-    if (worldData === undefined) return;
-
-    // Lock camera
-    camera.xOffset = Math.max(0, Math.min((worldData.xMax + 1) * scale * tileSize - canvas.width, camera.xOffset));
-    camera.yOffset = Math.max(0, Math.min((worldData.yMax + 1) * scale * tileSize - canvas.height, camera.yOffset));
-
-    gfx.drawImage(canvas.offScreenCanvas, 0, 0);
-    renderMap(worldData);
-}
