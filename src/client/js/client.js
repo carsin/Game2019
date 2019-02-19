@@ -5,6 +5,11 @@ var fpsView = document.getElementById("fpsView");
 var worldData;
 
 var gfx = new GFX(8, 4);
+var input = new Input(8, 4);
+var resources = new Resources(8, 4);
+
+resources.loadTexture("dirt", "../res/img/dirt.png");
+resources.loadTexture("grass", "../res/img/grass.png");
 
 function update() {
     // Update camera position
