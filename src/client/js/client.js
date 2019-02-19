@@ -4,21 +4,22 @@ var fpsChange;
 var fpsView = document.getElementById("fpsView");
 var worldData;
 
+var gfx = new GFX(8, 4);
+
 function update() {
     // Update camera position
     // TODO: make permanent variable
-    var scrollSpeed = 4 * scale;
+    var scrollSpeed = 4 * gfx.scale;
 
     // Breaks camera panning boundaries
-    if (input.keys[87]) camera.yOffset -= scrollSpeed;
-    if (input.keys[83]) camera.yOffset += scrollSpeed;
-    if (input.keys[65]) camera.xOffset -= scrollSpeed;
-    if (input.keys[68]) camera.xOffset += scrollSpeed;
+    if (input.keys[87]) gfx.camera.yOffset -= scrollSpeed;
+    if (input.keys[83]) gfx.camera.yOffset += scrollSpeed;
+    if (input.keys[65]) gfx.camera.xOffset -= scrollSpeed;
+    if (input.keys[68]) gfx.camera.xOffset += scrollSpeed;
 }
 
-window.onload = gfx.cfx.fillScreen();
-window.addEventListener("resize", gfx.ctx.fillScreen);
-
+fillScreen();
+window.addEventListener("resize", gfx.fillScreen);
 
 // Main game loop.
 function onFrame() {
@@ -35,6 +36,5 @@ function onFrame() {
     render();
     window.requestAnimationFrame(onFrame);
 }
-console.log(gfx.canvas);
 
 window.requestAnimationFrame(onFrame);

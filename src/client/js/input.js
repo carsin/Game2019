@@ -18,3 +18,27 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => { input.keys[e.keyCode] = false; });
+
+// Move camera with mouse
+document.addEventListener("mousedown", (e) => {
+    input.mouse.click = true;
+    input.mouse.lastX = e.clientX;
+    input.mouse.lastY = e.clientY;
+}, true);
+
+document.addEventListener("mouseup", () => {
+    input.mouse.click = false;
+}, true);
+
+document.addEventListener("mousemove", (e) => {
+    if (input.mouse.click) {
+        var xDiff = input.mouse.lastX - e.clientX;
+        var yDiff = input.mouse.lastY - e.clientY;
+
+        gfx.camera.xOffset = Math.round(gfx.camera.xOffset + xDiff);
+        gfx.camera.yOffset = Math.round(gfx.camera.yOffset + yDiff);
+
+        input.mouse.lastX = e.clientX;
+        input.mouse.lastY = e.clientY;
+    }
+}, true);
