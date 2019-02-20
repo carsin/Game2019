@@ -3,23 +3,21 @@ var app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 
-// World variables
 var World = require(__dirname + "/world.js");
+var Entity = require(__dirname + "/entity.js");
+
 var world = new World(200, 10);
+new Entity("soldier", 0, 3, 3, world);
 
-// Send html
 app.use(express.static(__dirname + "/client"));
-
-// Send static files
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/client/html/index.html");
 });
 
-// Connect event
 io.on("connection", (socket) => {
     console.log("A player connected");
 
-    io.emit("worldData", { mapSize: world.worldSize, chunkSize: world.chunkSize });
+    io.emit("worldData", { mapSize: world.worldSize, chunkSize: world.chunkSize, entities: world.entities });
 
     // Send map to player initally
     var chunksToSend = [];
@@ -30,14 +28,11 @@ io.on("connection", (socket) => {
     }
 
     io.emit("chunks", chunksToSend);
-
-    // Disconnect event
     socket.on("disconnect", () => {
         console.log("A player disconnected");
     });
 });
 
-// Start server
 http.listen(13050, () => {
     console.log("Server started");
 });

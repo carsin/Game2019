@@ -5,14 +5,16 @@ var fpsView = document.getElementById("fpsView");
 var worldData;
 
 var gfx = new GFX(8, 4);
-var input = new Input(8, 4);
-var resources = new Resources(8, 4);
+var input = new Input();
+var resources = new Resources();
 
 resources.loadTexture("dirt", "../res/img/dirt.png");
 resources.loadTexture("grass", "../res/img/grass.png");
+resources.loadTexture("soldier", "../res/img/entity/soldierv1front.png");
 
 window.onload = gfx.fillScreen;
 window.addEventListener("resize", gfx.fillScreen);
+
 
 function update() {
     var scrollSpeed = 4 * gfx.scale;

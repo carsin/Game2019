@@ -62,6 +62,20 @@ function GFX(tileSize, scale) {
         }
     };
 
+    this.renderEntities = (world) => {
+        if (world == undefined) return;
+
+        for (var i = 0; i < world.entities.length; i++) {
+            this.canvas.preCtx.drawImage(
+                resources.textures[world.entities[i].name],
+                ((world.entities[i].x) * this.tileSize) * this.scale - this.camera.xOffset,
+                ((world.entities[i].y) * this.tileSize) * this.scale - this.camera.yOffset,
+                this.tileSize * this.scale,
+                this.tileSize * this.scale
+            );
+        }
+    };
+
     this.render = () => {
         if (worldData === undefined) return;
 
@@ -71,5 +85,6 @@ function GFX(tileSize, scale) {
 
         this.ctx.drawImage(this.canvas.offScreenCanvas, 0, 0);
         this.renderMap(worldData);
+        this.renderEntities(worldData);
     };
 }

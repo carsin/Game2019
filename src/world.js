@@ -25,15 +25,11 @@ function Chunk(chunkSize, chunkX, chunkY) {
 }
 
 function World(worldSize, chunkSize) {
-
-    // Chunks array
     this.chunks = [];
-
-    // Length of the world in tiles
     this.worldSize = worldSize;
-
-    // Tiles per chunk
     this.chunkSize = chunkSize;
+
+    this.entities = [];
     
     // Length of the world in chunks
     this.lengthInChunks = this.worldSize / this.chunkSize;
