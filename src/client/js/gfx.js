@@ -28,35 +28,46 @@ function GFX(tileSize, scale) {
     this.renderMap = (world) => {
         if (world == undefined) return;
 
-        // Calculate bounds of triangle to render
-        var xStart = Math.floor(Math.max(0, this.camera.xOffset / (this.tileSize * this.scale)));
-        var yStart = Math.floor(Math.max(0, this.camera.yOffset / (this.tileSize * this.scale)));
-        var xEnd = Math.ceil(Math.min(world.xMax, xStart + (this.canvas.width / (this.tileSize * this.scale))));
-        var yEnd = Math.ceil(Math.min(world.yMax, yStart + (this.canvas.height / (this.tileSize * this.scale))));
+        // Calculate bounds of rectangle to render
+        var xStart = Math.floor(Math.max(0, this.camera.xOffset / (this.tileSize * this.scale * world.chunkSize)));
+        var yStart = Math.floor(Math.max(0, this.camera.yOffset / (this.tileSize * this.scale * world.chunkSize)));
+        var xEnd = Math.ceil(Math.min(world.mapSize / world.chunkSize, xStart + (this.canvas.width / (this.tileSize * this.scale * world.chunkSize)) + 1));
+        var yEnd = Math.ceil(Math.min(world.mapSize / world.chunkSize, yStart + (this.canvas.height / (this.tileSize * this.scale * world.chunkSize)) + 1));
         // console.log("xStart: " + xStart + " | yStart: " + yStart + " | xEnd: " + xEnd + " | yEnd: " + yEnd);
 
         // From top left of screen to bottom right of screen
-        for (var x = xStart; x <= xEnd; x++) {
-            for (var y = yStart; y <= yEnd; y++) {
+        for (var x = xStart; x < xEnd; x++) {
+            for (var y = yStart; y < yEnd; y++) {
+                for (var xa = 0; xa < world.chunkSize; xa++) {
+                    for (var ya = 0; ya < world.chunkSize; ya++) {
+
+                        // Choose texture based on tile id
+                        switch (world.chunks[x][y].tiles[xa][ya]) {
+                            case 0: tex = resources.textures["dirt"]; break;
+                            case 1: tex = resources.textures["grass"]; break;
+                        }
+
+                        this.canvas.preCtx.drawImage(
+                            tex,
+                            ((x * world.chunkSize + xa) * this.tileSize) * this.scale - this.camera.xOffset,
+                            ((y * world.chunkSize + ya) * this.tileSize) * this.scale - this.camera.yOffset,
+                            this.tileSize * this.scale,
+                            this.tileSize * this.scale
+                        );
+                    }
+                }
                 var tex;
 
-                // Choose texture based on tile id
-                switch (world.map[x][y]) {
-                    case "0": tex = resources.textures["dirt"]; break;
-                    case "1": tex = resources.textures["grass"]; break;
-                }
-
-                this.canvas.preCtx.drawImage(tex, (x * this.tileSize) * this.scale - this.camera.xOffset, (y * this.tileSize) * this.scale - this.camera.yOffset, this.tileSize * this.scale, this.tileSize * this.scale);
             }
         }
     };
-    
+
     this.render = () => {
         if (worldData === undefined) return;
 
         // Lock camera
-        this.camera.xOffset = Math.max(0, Math.min((worldData.xMax + 1) * this.scale * this.tileSize - this.canvas.width, this.camera.xOffset));
-        this.camera.yOffset = Math.max(0, Math.min((worldData.yMax + 1) * this.scale * this.tileSize - this.canvas.height, this.camera.yOffset));
+        this.camera.xOffset = Math.max(0, Math.min((worldData.mapSize + 1) * this.scale * this.tileSize - this.canvas.width, this.camera.xOffset));
+        this.camera.yOffset = Math.max(0, Math.min((worldData.mapSize + 1) * this.scale * this.tileSize - this.canvas.height, this.camera.yOffset));
 
         this.ctx.drawImage(this.canvas.offScreenCanvas, 0, 0);
         this.renderMap(worldData);

@@ -35,6 +35,8 @@ document.addEventListener("mousemove", (e) => {
         var xDiff = input.mouse.lastX - e.clientX;
         var yDiff = input.mouse.lastY - e.clientY;
 
+        console.log(gfx);
+
         gfx.camera.xOffset = Math.round(gfx.camera.xOffset + xDiff);
         gfx.camera.yOffset = Math.round(gfx.camera.yOffset + yDiff);
 
