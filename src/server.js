@@ -7,7 +7,7 @@ var World = require(__dirname + "/world.js");
 var Entity = require(__dirname + "/entity.js");
 
 var world = new World(200, 10);
-new Entity("soldier", 0, 3, 3, world);
+new Entity("soldier", 0, 15, 15, world);
 
 app.use(express.static(__dirname + "/client"));
 app.get("/", (req, res) => {
@@ -28,6 +28,12 @@ io.on("connection", (socket) => {
     }
 
     io.emit("chunks", chunksToSend);
+
+    socket.on("click", (pos) => {
+        world.entities[0].tgtX = pos.x;
+        world.entities[0].tgtY = pos.y;
+    });
+
     socket.on("disconnect", () => {
         console.log("A player disconnected");
     });
@@ -50,6 +56,11 @@ function tick() {
     var delta = now - lt;
     lt = now;
 
+    for (var i = 0; i < world.entities.length; i++) {
+        world.entities[i].update(delta);
+        world.setTile(world.entities[i].x, world.entities[i].y, 0);
+    }
+
     // Send chunks that have been updated
     var chunksToSend = [];
     for (var x = 0; x < world.lengthInChunks; x++) {
@@ -60,6 +71,7 @@ function tick() {
         }
     }
 
+    io.emit("chunks", chunksToSend);
     io.emit("entities", world.entities);
 }
 

@@ -3,25 +3,41 @@ function Entity(name, id, initialX, initialY, world) {
     this.id = id;
     this.x = initialX;
     this.y = initialY;
-    this.lastDirSwitched = 0;
-    this.dir = 4;
+    this.tgtX = initialX;
+    this.tgtY = initialY;
+    this.moveTimerX = 0;
+    this.moveTimerY = 0;
 
-    this.update = () => {
-        // Random movement
-        this.lastDirSwitched++;
+    this.update = (delta) => {
+        // Move towards target
+
+        // Calculate normalized move direction 
+        var dirX = this.tgtX - this.x;
+        var dirY = this.tgtY - this.y;
+        var mag = Math.sqrt(dirX * dirX + dirY * dirY);
         
-        if (this.lastDirSwitched >= 120) {
-            this.dir = Math.floor(Math.random() * 5);
+        if (mag !== 0) {
+            var moveX = dirX / mag;
+            var moveY = dirY / mag;
+
+            // Time for each tile move
+            timeX = Math.abs(1 / moveX);
+            timeY = Math.abs(1 / moveY);
+
+            if (this.moveTimerX >= timeX) {
+                this.moveTimerX -= timeX;
+                this.x += moveX > 0 ? 1 : -1;
+            }
+            if (this.moveTimerY >= timeY) {
+                this.moveTimerY -= timeY;
+                this.y += moveY > 0 ? 1 : -1;
+            }
         }
 
-        switch (dir) {
-            case 0: this.x++;
-            case 1: this.x--;
-            case 2: this.y++;
-            case 3: this.y--;
-            case 4: console.log("staystillbah");
-        }
+        var speed = 4;
 
+        this.moveTimerX += delta * speed;
+        this.moveTimerY += delta * speed;
     };
 
 

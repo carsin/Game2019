@@ -63,7 +63,7 @@ function GFX(tileSize, scale) {
     };
 
     this.renderEntities = (world) => {
-        if (world == undefined) return;
+        if (world == undefined || world.entities == undefined) return;
 
         for (var i = 0; i < world.entities.length; i++) {
             this.canvas.preCtx.drawImage(

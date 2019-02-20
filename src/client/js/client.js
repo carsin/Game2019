@@ -15,7 +15,6 @@ resources.loadTexture("soldier", "../res/img/entity/soldierv1front.png");
 window.onload = gfx.fillScreen;
 window.addEventListener("resize", gfx.fillScreen);
 
-
 function update() {
     var scrollSpeed = 4 * gfx.scale;
 

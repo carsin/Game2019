@@ -7,19 +7,19 @@ function Chunk(chunkSize, chunkX, chunkY) {
 
     // Set and get tiles
     this.setTile = (x, y, val) => {
-        tiles[x][y] = val;
+        this.tiles[x][y] = val;
         this.updated = true;
     };
 
     this.getTile = (x, y) => {
-        return tiles[x][y];
+        return this.tiles[x][y];
     };
 
     // Init tiles
     for (var x = 0; x < this.chunkSize; x++) {
         this.tiles[x] = [];
         for (var y = 0; y < this.chunkSize; y++) {
-            this.tiles[x][y] = Math.floor(Math.random() * 2);
+            this.tiles[x][y] = 1;
         }
     }
 }
@@ -38,11 +38,11 @@ function World(worldSize, chunkSize) {
 
     // Automatically set and get tile from raw tile coords
     this.setTile = (x, y, val) => {
-        getChunk(Math.floor(x / this.chunkSize), Math.floor(y / this.chunkSize)).setTile(x % this.chunkSize, y % this.chunkSize, val);
+        this.getChunk(Math.floor(x / this.chunkSize), Math.floor(y / this.chunkSize)).setTile(x % this.chunkSize, y % this.chunkSize, val);
     };
 
     this.getTile = (x, y) => {
-        return getChunk(Math.floor(x / this.chunkSize), Math.floor(y / this.chunkSize)).getTile(x % this.chunkSize, y % this.chunkSize);
+        return this.getChunk(Math.floor(x / this.chunkSize), Math.floor(y / this.chunkSize)).getTile(x % this.chunkSize, y % this.chunkSize);
     };
 
     // Init chunks
