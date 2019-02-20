@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
     console.log("A player connected");
 
-    io.emit("worldData", { mapSize: world.worldSize, chunkSize: world.chunkSize, entities: world.entities });
+    io.emit("worldData", { mapSize: world.worldSize, chunkSize: world.chunkSize });
 
     // Send map to player initally
     var chunksToSend = [];
@@ -59,6 +59,8 @@ function tick() {
             chunk.updated = false;
         }
     }
+
+    io.emit("entities", world.entities);
 }
 
 setInterval(tick, 1000 / 60);
