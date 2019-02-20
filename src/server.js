@@ -36,3 +36,29 @@ io.on("connection", (socket) => {
 http.listen(13050, () => {
     console.log("Server started");
 });
+
+function hrtime() {
+    var t = process.hrtime();
+    return t[0] + t[1] / 1000000000;
+}
+
+// Timestamp of last tick
+var lt = hrtime();
+
+function tick() {
+    now = hrtime();
+    var delta = now - lt;
+    lt = now;
+
+    // Send chunks that have been updated
+    var chunksToSend = [];
+    for (var x = 0; x < world.lengthInChunks; x++) {
+        for (var y = 0; y < world.lengthInChunks; y++) {
+            var chunk = world.getChunk(x, y);
+            if (chunk.updated) chunksToSend.push(chunk);
+            chunk.updated = false;
+        }
+    }
+}
+
+setInterval(tick, 1000 / 60);
