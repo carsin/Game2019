@@ -15,7 +15,7 @@ function Entity(name, id, initialX, initialY, world) {
         var dirX = this.tgtX - this.x;
         var dirY = this.tgtY - this.y;
         var mag = Math.sqrt(dirX * dirX + dirY * dirY);
-        
+
         if (mag !== 0) {
             var moveX = dirX / mag;
             var moveY = dirY / mag;
@@ -32,12 +32,15 @@ function Entity(name, id, initialX, initialY, world) {
                 this.moveTimerY -= timeY;
                 this.y += moveY > 0 ? 1 : -1;
             }
+
+            var speed = 4;
+
+            this.moveTimerX += delta * speed;
+            this.moveTimerY += delta * speed;
+        } else {
+            this.moveTimerX = 0;
+            this.moveTimerY = 0;
         }
-
-        var speed = 4;
-
-        this.moveTimerX += delta * speed;
-        this.moveTimerY += delta * speed;
     };
 
 

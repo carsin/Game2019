@@ -23,8 +23,8 @@ document.addEventListener("mouseup", () => {
 
 document.addEventListener("mousemove", (e) => {
 
-    input.mouse.x = (e.clientX + gfx.camera.xOffset) / (gfx.tileSize * gfx.scale);
-    input.mouse.y = (e.clientY + gfx.camera.yOffset) / (gfx.tileSize * gfx.scale);
+    input.mouse.x = Math.floor((e.clientX + gfx.camera.xOffset) / (gfx.tileSize * gfx.scale));
+    input.mouse.y = Math.floor((e.clientY + gfx.camera.yOffset) / (gfx.tileSize * gfx.scale));
 
     if (input.mouse.click) {
         var xDiff = input.mouse.lastX - e.clientX;
